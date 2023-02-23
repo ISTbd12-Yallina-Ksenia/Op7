@@ -1,0 +1,49 @@
+with open("arr.txt") as c:
+        allowedSymbols={'-':'-', '0':'ноль', '1':'один', '2':'два','3':'три', '4':'четыре', '5':'пять', '6':'шесть',
+                        '7': 'семь', '8': 'восемь', '9':'девять', 'A':'десять', 'B':'одиннадцать', 'C':'двенадцать', 'D': 'тринадцать',
+                        'E': 'четырнадцать', 'F': 'пятнадцать', 'a':'десять', 'b':'одиннадцать', 'c':'двенадцать', 'd':'тринадцать', 'e':'четырнадцать', 'f':'пятнадцать'} 
+        keys_symbols=list(allowedSymbols.keys())
+        symbol = c.read(1)
+        if symbol=='':
+            print("Пустой файл")
+        strNumber = ""
+        numberLength = len(strNumber)
+        lastNumber = '0'##последнее сохраненное число последовательности
+        MaxNumber='0'#максимальное число последовательности
+        while True:  
+            numberLength = len(strNumber)
+            if symbol in keys_symbols: #если символ - символ 16-ричного числа
+                strNumber += symbol
+            elif numberLength >= 3 and (strNumber[-3] =='A' or strNumber[-3]=='a') : #проверка условий
+                if lastNumber=='0': #первое число в файле
+                    lastNumber=strNumber
+                    MaxNumber=strNumber
+                    print(MaxNumber, end=' ')
+                    symbol=c.read(1)
+                    strNumber=""
+                    continue
+                if int(strNumber, base=16)<int(lastNumber, base=16): #если прочитанное число меньше предыдущего, то последов-ть продолжается
+                    lastNumber=strNumber
+                    print(lastNumber, end=' ')
+                else: #иначе начин-ся новая последов-ть, тогда выводим сразу ее максимальное число
+                    print('')
+                    for i in MaxNumber:
+                       print(allowedSymbols[i], end=',')
+                    print('\n')
+                    lastNumber=strNumber
+                    MaxNumber=strNumber
+                    print(MaxNumber, end=' ')
+                strNumber="" #сбрасываем строку
+            else:
+                strNumber = ""
+            if len(symbol) == 0:  #если это был последний элемент, делаем обработку конца файла и завершаем
+                print('') #переход на другую строку, под последовательностью чисел 
+                if MaxNumber!='0':
+                    for i in MaxNumber:
+                        print(allowedSymbols[i], end=',')
+                break
+            else:
+                symbol = c.read(1)
+if MaxNumber=='0':
+    print("Нет нужных чисел")
+print("\nКонец.")
